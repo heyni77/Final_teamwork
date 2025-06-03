@@ -44,6 +44,9 @@ df["sentiment"] = df["cleaned"].apply(get_sentiment)
 
 print(df[["review", "sentiment"]].head(10))
 print("전체 리뷰 개수:", len(df))
+print("긍정 리뷰 개수:", len(df[df["sentiment"] == "긍정"]))
+print("부정 리뷰 개수:", len(df[df["sentiment"]=="부정"]))
+print("오류 리뷰 개수:", len(df[df["sentiment"] == "오류"]))
 
 #5. 감정 분석 결과 저장
 df.to_csv("감정분석_결과.csv", index=False, encoding="utf-8-sig")
