@@ -29,7 +29,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer(max_features=1000)
 X = vectorizer.fit_transform(df["cleaned"])
 
-#4. 감정 분석 (transformer사용용)
+#4. 감정 분석 (transformer사용)
 from transformers import pipeline
 classifier = pipeline("sentiment-analysis", model="beomi/KcELECTRA-base") #지피티의 도움을 받음
 
@@ -45,5 +45,7 @@ df["sentiment"] = df["cleaned"].apply(get_sentiment)
 print(df[["review", "sentiment"]].head(10))
 print("전체 리뷰 개수:", len(df))
 
+#5. 감정 분석 결과 저장
+df.to_csv("감정분석_결과.csv", index=False, encoding="utf-8-sig")
 
 
