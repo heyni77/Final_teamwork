@@ -1,54 +1,34 @@
-#1. 리뷰 텍스트 불러오기기
 import pandas as pd
-with open("random_review.txt", "r", encoding = "cp949") as f:
-    lines = f.readlines()
-
-#줄 번호 제거 및 양쪽 공백 제거
-reviews = []
-for line in lines:
-    parts = line.strip().split("\t", 1)
-    if len(parts) == 2:
-        review_text = parts[1]
-        reviews.append(review_text)
-
-df = pd.DataFrame(reviews, columns = ["review"])
-print(df.head())
-
-#2. 텍스트 전처리
-import re
-
-def clean_text(text):
-    text = re.sub(r"[^\uAC00-\uD7A3a-zA-Z0-9\s]", "", text) #특수 문자 제거하기
-    text = re.sub(r"\s+", " ", text) #공백 정리
-    return text.strip()
-
-df["cleaned"] = df["review"].apply(clean_text)
-
-#3. 임베딩
+from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-vectorizer = TfidfVectorizer(max_features=1000)
-X = vectorizer.fit_transform(df["cleaned"])
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
 
-#4. 감정 분석 (transformer사용)
-from transformers import pipeline
-classifier = pipeline("sentiment-analysis", model="beomi/KcELECTRA-base") #지피티의 도움을 받음
+# 1. 데이터 불러오기
+df = pd.read_csv("aihub_018_감성대화.csv") 
 
-def get_sentiment(text):
-    try:
-        result = classifier(text[:512])[0]
-        return "긍정" if result["label"] == "LABEL_1" else "부정"
-    except Exception as e:
-        return "오류"
-    
-df["sentiment"] = df["cleaned"].apply(get_sentiment)
+# 2. 텍스트와 라벨 지정
+texts = df['text']    
+labels = df['types'] 
 
-print(df[["review", "sentiment"]].head(10))
-print("전체 리뷰 개수:", len(df))
-print("긍정 리뷰 개수:", len(df[df["sentiment"] == "긍정"]))
-print("부정 리뷰 개수:", len(df[df["sentiment"]=="부정"]))
-print("오류 리뷰 개수:", len(df[df["sentiment"] == "오류"]))
+# 3. 학습/테스트 분할
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.2, random_state=42, stratify=labels)
 
-#5. 감정 분석 결과 저장
-df.to_csv("감정분석_결과.csv", index=False, encoding="utf-8-sig")
+# 4. TF-IDF 벡터화
+vectorizer = TfidfVectorizer()
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
 
+# 5. 로지스틱 회귀 모델 학습
+model = LogisticRegression(max_iter=1000, solver='liblinear')
+model.fit(X_train_vec, y_train)
 
+# 6. 테스트 예측 및 평가
+y_pred = model.predict(X_test_vec)
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+# 7. 결과 출력
+print("정확도:", accuracy)
+print("분류 리포트:\n", report)
