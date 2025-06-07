@@ -2,8 +2,8 @@ import openai
 import time
 import os
 
-# OpenAI API 키 설정 (친구가 이걸 직접 넣으면 됨)
-openai.api_key = ""  # 여기에 실제 API Key를 넣으세요
+# OpenAI API 키 설정
+openai.api_key = "" 
 
 # 감정별 파일명
 emotion_files = [
