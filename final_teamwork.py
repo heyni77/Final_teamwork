@@ -32,3 +32,12 @@ report = classification_report(y_test, y_pred)
 # 7. 결과 출력
 print("정확도:", accuracy)
 print("분류 리포트:\n", report)
+
+#8. 학습된 모델과 벡터 저장 (지피티의 도움을 받아 진행)
+import joblib
+
+# 모델 저장
+joblib.dump(model, 'model.pkl')
+
+# 벡터라이저 저장
+joblib.dump(vectorizer, 'vectorizer.pkl')
