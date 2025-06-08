@@ -48,6 +48,7 @@ import joblib
 from collections import Counter
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import platform
 
 # 모델과 벡터 불러오기
 model = joblib.load('model.pkl')
@@ -71,6 +72,15 @@ for review, prediction in zip(reviews, predictions):
     print(f"리뷰: {review} ➡ 감정: {prediction}")
 
 
+# 한글 폰트 설정(ai도움)
+if platform.system() == 'Windows':
+    plt.rc('font', family='Malgun Gothic')  # Windows용
+elif platform.system() == 'Darwin':
+    plt.rc('font', family='AppleGothic')    # macOS용
+else:
+    plt.rc('font', family='NanumGothic')    # Linux/Colab용
+
+plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
 
 # 첫 번째 막대그래프_감정 개수 
 emotion_counts = Counter(predictions)
