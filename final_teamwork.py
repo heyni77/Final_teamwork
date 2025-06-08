@@ -77,7 +77,7 @@ emotion_counts = Counter(predictions)
 total_reviews = sum(emotion_counts.values())
 emotion_percentages = {emotion: (count / total_reviews) * 100 for emotion, count in emotion_counts.items()}
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 6))  # 1행 2열 (좌/우)
+fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 axes[0].bar(emotion_counts.keys(), emotion_counts.values(), color='skyblue')
 axes[0].set_title('감정별 리뷰 개수')
@@ -97,9 +97,7 @@ for i, (emotion, percentage) in enumerate(emotion_percentages.items()):
     axes[1].text(i, percentage + 1, f'{percentage:.1f}%', ha='center')
 
 plt.show()
-
-# 그래프 저장
-fig.savefig('감정_리뷰_개수_비율_한화면.png', dpi=300)
+fig.savefig('감정_리뷰_개수_비율.png', dpi=300)
 
 
 
