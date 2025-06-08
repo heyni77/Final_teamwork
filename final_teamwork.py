@@ -53,20 +53,20 @@ from collections import defaultdict
 model = joblib.load('model.pkl')
 vectorizer = joblib.load('vectorizer.pkl')
 
-# 리뷰 파일 불러오기
+# 모델 테스트용 샘플 문장
+test_sentence = "이 제품 정말 좋아요!"
+test_vector = vectorizer.transform([test_sentence])
+test_prediction = model.predict(test_vector)[0]
+print(f"테스트 문장: '{test_sentence}' ➡ 예측 감정: {test_prediction}\n")
+
+# 리뷰 감정 분류하기
 with open('리뷰 랜덤 추출.txt', 'r', encoding='cp949') as f:
     reviews = f.readlines()
 
-# 전처리
 reviews = [review.strip() for review in reviews if review.strip()]
-
-# 벡터화
 review_vectors = vectorizer.transform(reviews)
 
-# 감정 예측
 predictions = model.predict(review_vectors)
-
-# 결과 출력
 for review, prediction in zip(reviews, predictions):
     print(f"리뷰: {review} ➡ 감정: {prediction}")
 
